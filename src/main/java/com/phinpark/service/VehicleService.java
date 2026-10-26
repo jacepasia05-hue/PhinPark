@@ -10,11 +10,9 @@ import com.phinpark.entity.UserEntity;
 import com.phinpark.entity.VehicleEntity;
 import com.phinpark.repository.UserRepository;
 import com.phinpark.repository.VehicleRepository;
-import com.phinpark.model.ParkingSlot;
-import com.phinpark.model.Ticket;
-import com.phinpark.storage.DataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VehicleService {
@@ -24,6 +22,9 @@ public class VehicleService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ParkingDataService parkingDataService;
 
     public List<VehicleResponse> getAllVehicles() {
         List<VehicleResponse> vehicles = new ArrayList<>();
@@ -117,6 +118,7 @@ public class VehicleService {
         return convertToVehicleResponse(saved, owner.get());
     }
 
+    @Transactional
     public void deleteVehicle(String plateNumber, boolean isAdmin) {
         if (!isAdmin) {
             throw new RuntimeException("Only administrators can remove vehicles");
@@ -129,23 +131,7 @@ public class VehicleService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
         String deletedPlate = vehicle.getPlateNumber();
 
-        if (DataManager.activeTickets != null) {
-            DataManager.activeTickets.removeIf(ticket -> {
-                if (ticket == null || ticket.getVehicle() == null
-                        || !deletedPlate.equalsIgnoreCase(ticket.getVehicle().getPlateNumber())) {
-                    return false;
-                }
-                if (DataManager.parkingSlot != null) {
-                    for (ParkingSlot slot : DataManager.parkingSlot) {
-                        if (slot != null && slot.getSlotNumber() == ticket.getSlotNumber()) {
-                            slot.setVehicle(null);
-                            slot.free();
-                        }
-                    }
-                }
-                return true;
-            });
-        }
+        parkingDataService.removeActiveTicketsForPlate(deletedPlate);
 
         vehicleRepository.delete(vehicle);
     }

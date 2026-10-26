@@ -6,9 +6,8 @@ import com.phinpark.model.ParkingSlot;
 import com.phinpark.model.Ticket;
 
 /**
- * In-memory storage for parking system data.
- * Note: Parking slots and active tickets are still stored here,
- * but user and vehicle data is now persisted in MySQL database.
+ * Legacy in-memory state for the original parking model. The web API persists
+ * parking slots and tickets through ParkingDataService.
  */
 public class DataManager {
 

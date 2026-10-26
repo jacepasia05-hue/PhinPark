@@ -1,6 +1,9 @@
 /pHINparks.mv.db
 /pHINparks.lock.db
 /pHINparks.trace.db
+*.mv.db
+*.lock.db
+*.trace.db
 /bin/
 /target/
 /.settings/

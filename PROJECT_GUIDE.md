@@ -15,21 +15,22 @@ Start with these files, in this order:
    JavaScript that calls the backend.
 3. `src/main/java/com/phinpark/controller/` contains the API endpoints used by
    that page.
-4. `src/main/java/com/phinpark/service/` contains account and vehicle rules.
+4. `src/main/java/com/phinpark/service/` contains account, vehicle, and
+   persistent parking rules.
 5. `src/main/java/com/phinpark/model/` contains parking objects such as
    `Vehicle`, `ParkingSlot`, and `Ticket`.
 
 Other useful files:
 
-- `src/main/java/com/phinpark/entity/` defines database records for users and
-  vehicles.
+- `src/main/java/com/phinpark/entity/` defines database records for users,
+  vehicles, parking slots, and tickets.
 - `src/main/java/com/phinpark/repository/` provides database queries.
+- `src/main/java/com/phinpark/service/ParkingDataService.java` stores parking
+  slots and ticket activity in the database.
 - `src/main/java/com/phinpark/config/ApiAuthorizationInterceptor.java` checks
   the signed-in user and blocks client accounts from admin-only API actions.
 - `src/main/java/com/phinpark/config/DataInitializer.java` creates the sample
   parking slots when the app starts.
-- `src/main/java/com/phinpark/storage/DataManager.java` keeps parking slots and
-  ticket records in memory while the app is running.
 - `src/main/resources/application.properties` configures the local server and
   H2 database. `application-prod.properties` configures PostgreSQL for Render.
 
@@ -44,7 +45,7 @@ For example, when a customer registers a vehicle:
 1. The page sends the vehicle details to `POST /api/vehicles`.
 2. `VehicleController` gets the signed-in user's ID from the server session.
 3. `VehicleService` checks the details and creates a vehicle record.
-4. `VehicleRepository` saves that record in H2.
+4. `VehicleRepository` saves that record in the configured database.
 
 The browser does not choose the account ID for the new vehicle.
 
@@ -100,18 +101,28 @@ before running Maven.
 
 ## Where the data is saved
 
-Locally, users and vehicles are saved in the file-backed H2 database in the
-project folder. Keep the `phinparks.mv.db` file; deleting it deletes those
-saved accounts and vehicles. The H2 Console is for local development and is
-disabled in the production profile.
+Locally, users, vehicles, parking slots, and tickets are saved in the file-backed
+H2 database in the project folder. Keep the `phinparks.mv.db` file; deleting it
+deletes that saved data. The H2 Console is for local development and is disabled
+in the production profile.
 
-The Render deployment uses a free PostgreSQL database for users and vehicles.
-Free Render databases expire 30 days after creation and have no backups, so
-upgrade the database before that deadline to keep its data. The production
-database starts empty; local H2 data is not migrated automatically.
+The Render deployment uses PostgreSQL for users, vehicles, parking slots, and
+ticket history. The production database starts empty; local H2 data is not
+migrated automatically. Render's free PostgreSQL database expires after 30
+days, so do not treat it as permanent storage.
 
-Parking slots, active tickets, and ticket history are currently held in memory
-by `DataManager`. They reset whenever the app restarts, including on Render.
+To view the hosted records, open the `phinparks-db` database in the Render
+dashboard and copy its **external** connection details into a PostgreSQL
+connection in DBeaver. Do not share the database password. Example read-only
+queries:
+
+```sql
+SELECT id, first_name, last_name, email, account_type, created_at FROM users;
+SELECT vehicle_id, owner_id, vehicle_type, plate_number FROM registered_vehicle;
+SELECT slot_number, occupied, slot_type FROM parking_slot;
+SELECT ticket_id, owner_id, plate_number, slot_number, entry_time, exit_time, total_fee
+FROM parking_ticket;
+```
 
 ## Deploy and connect `phinpark.com`
 
@@ -135,12 +146,11 @@ after 30 days. This setup is intended for a school demo, not production use.
 ## Short explanation for a presentation
 
 > PHINParks is a Spring Boot web app for managing school parking. The web page
-> sends requests to Java API controllers. The local app stores user accounts
-> and vehicles in H2; the Render deployment uses PostgreSQL. Parking slots and
-> tickets are currently kept in memory. A ticket connects a vehicle to a slot
-> and records when it entered. The customer can view the bill, and an
-> administrator records the cash payment before checkout makes the slot
-> available again.
+> sends requests to Java API controllers. The local app uses H2, and the Render
+> deployment uses PostgreSQL. Both databases store user accounts, vehicles,
+> parking slots, and tickets. A ticket records a vehicle's slot and parking
+> times. The customer can view the bill, and an administrator records the cash
+> payment before checkout makes the slot available again.
 
 ## Questions to prepare for
 
@@ -149,9 +159,7 @@ after 30 days. This setup is intended for a school demo, not production use.
 - **How does a customer become an administrator?** Public registration cannot
   choose the admin role. First-admin setup requires the private setup key, and
   admin API actions check the role stored in the database.
-- **What stays after restart?** Local user accounts and vehicles stay in H2;
-  Render stores them in PostgreSQL until its free database expires. Slots and
-  tickets currently reset.
+- **What stays after restart?** The database stores accounts, vehicles, parking
+  slots, and tickets. Render's free PostgreSQL database expires after 30 days.
 - **What would you improve next?** Save parking slots and tickets in the
   database, and add production-ready security configuration before deploying
-
