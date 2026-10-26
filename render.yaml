@@ -17,6 +17,8 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
+      - key: PHINPARKS_ADMIN_SETUP_KEY
+        sync: false
       - key: PHINPARKS_DB_HOST
         fromDatabase:
           name: phinparks-db

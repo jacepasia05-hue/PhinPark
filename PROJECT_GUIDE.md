@@ -30,8 +30,8 @@ Other useful files:
   parking slots when the app starts.
 - `src/main/java/com/phinpark/storage/DataManager.java` keeps parking slots and
   ticket records in memory while the app is running.
-- `src/main/resources/application.properties` configures the server and H2
-  database.
+- `src/main/resources/application.properties` configures the local server and
+  H2 database. `application-prod.properties` configures PostgreSQL for Render.
 
 ## How one request moves through the app
 
@@ -100,23 +100,47 @@ before running Maven.
 
 ## Where the data is saved
 
-Users and vehicles are saved in the file-backed H2 database in the project
-folder. Keep the `pHINparks.mv.db` file; deleting it deletes those saved
-accounts and vehicles. The H2 Console is for local development and should not
-be exposed to other users.
+Locally, users and vehicles are saved in the file-backed H2 database in the
+project folder. Keep the `phinparks.mv.db` file; deleting it deletes those
+saved accounts and vehicles. The H2 Console is for local development and is
+disabled in the production profile.
+
+The Render deployment uses a free PostgreSQL database for users and vehicles.
+Free Render databases expire 30 days after creation and have no backups, so
+upgrade the database before that deadline to keep its data. The production
+database starts empty; local H2 data is not migrated automatically.
 
 Parking slots, active tickets, and ticket history are currently held in memory
-by `DataManager`. They reset when the app restarts; saving them permanently is
-a possible future improvement.
+by `DataManager`. They reset whenever the app restarts, including on Render.
+
+## Deploy and connect `phinpark.com`
+
+1. Push the project to its GitHub repository, then create a **Blueprint**
+   in Render and select that repository. Render reads `render.yaml` to create
+   the web service and free PostgreSQL database in Singapore.
+2. Before creating the first administrator, set a new
+   `PHINPARKS_ADMIN_SETUP_KEY` in the Render service's environment settings.
+   Generate a private key of at least 32 characters; never put it in this file
+   or in source control. A setup key was previously included in this guide,
+   so treat that value as compromised and do not reuse it.
+3. After the service deploys, open its **Settings > Custom Domains** in Render
+   and add `phinpark.com`. At your domain registrar, create the DNS records
+   Render displays for that domain. Render provisions HTTPS after DNS
+   verification; wait for the domain and certificate statuses to become
+   active.
+
+Render's free web service can sleep when idle, and the free database expires
+after 30 days. This setup is intended for a school demo, not production use.
 
 ## Short explanation for a presentation
 
 > PHINParks is a Spring Boot web app for managing school parking. The web page
-> sends requests to Java API controllers. The app stores user accounts and
-> vehicles in H2, and currently keeps parking slots and tickets in memory. A
-> ticket connects a vehicle to a slot and records when it entered. The customer
-> can view the bill, and an administrator records the cash payment before
-> checkout makes the slot available again.
+> sends requests to Java API controllers. The local app stores user accounts
+> and vehicles in H2; the Render deployment uses PostgreSQL. Parking slots and
+> tickets are currently kept in memory. A ticket connects a vehicle to a slot
+> and records when it entered. The customer can view the bill, and an
+> administrator records the cash payment before checkout makes the slot
+> available again.
 
 ## Questions to prepare for
 
@@ -125,10 +149,9 @@ a possible future improvement.
 - **How does a customer become an administrator?** Public registration cannot
   choose the admin role. First-admin setup requires the private setup key, and
   admin API actions check the role stored in the database.
-- **What stays after restart?** User accounts and vehicles stay in the H2
-  database file. Slots and tickets currently reset.
+- **What stays after restart?** Local user accounts and vehicles stay in H2;
+  Render stores them in PostgreSQL until its free database expires. Slots and
+  tickets currently reset.
 - **What would you improve next?** Save parking slots and tickets in the
   database, and add production-ready security configuration before deploying
-
-
 
