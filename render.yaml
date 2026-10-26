@@ -1,0 +1,39 @@
+databases:
+  - name: phinparks-db
+    databaseName: phinparks
+    user: phinparks
+    plan: free
+    region: singapore
+
+services:
+  - type: web
+    name: phinparks
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PHINPARKS_DB_HOST
+        fromDatabase:
+          name: phinparks-db
+          property: host
+      - key: PHINPARKS_DB_PORT
+        fromDatabase:
+          name: phinparks-db
+          property: port
+      - key: PHINPARKS_DB_NAME
+        fromDatabase:
+          name: phinparks-db
+          property: database
+      - key: PHINPARKS_DB_USER
+        fromDatabase:
+          name: phinparks-db
+          property: user
+      - key: PHINPARKS_DB_PASSWORD
+        fromDatabase:
+          name: phinparks-db
+          property: password
