@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run PHINParks",
+			"type": "shell",
+			"command": ".\\apache-maven-3.9.4\\bin\\mvn.cmd",
+			"args": [
+				"spring-boot:run"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

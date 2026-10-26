@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHINParks - Parking Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --green-900: #0c6d3b;
+            --green-800: #0f854b;
+            --green-700: #1aa85f;
+            --green-500: #2ecc71;
+            --green-300: #bfeecf;
+            --green-100: #eafaf1;
+            --cream: #f4f4f0;
+            --white: #ffffff;
+            --text: #1f2d25;
+            --muted: #5f6c66;
+            --gold: #d9a63a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1ebc5d;
+            min-height: 100vh;
+            padding: 18px 18px 12px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1290px;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            background: rgba(255,255,255,0.97);
+            padding: 18px 24px;
+            border-radius: 16px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto 0;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .brand-logo {
+            width: 64px;
+            height: 64px;
+            flex-shrink: 0;
+            display: block;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.14));
+        }
+
+        .brand-logo svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .navbar h1 {
+            color: #1ea95e;
+            font-size: clamp(2rem, 2.8vw, 3rem);
+            margin: 0;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .nav-links button {
+            background: linear-gradient(180deg, #25c86d 0%, #1ea85f 100%);
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            box-shadow: 0 3px 8px rgba(13, 127, 69, 0.15);
+        }
+
+        .nav-links button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(13, 127, 69, 0.2);
+        }
+
+        .nav-links button:active {
+            transform: translateY(0px);
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #1fc363 0%, #18a855 100%);
+            min-height: 520px;
+            border-radius: 0 0 18px 18px;
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 40px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-banner h2 {
+            display: block;
+            color: white;
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            margin: 0 0 16px 0;
+            font-weight: 800;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero-banner p {
+            display: block;
+            color: rgba(255,255,255,0.95);
+            font-size: clamp(1rem, 1.2vw, 1.2rem);
+            margin: 0 auto 32px;
+            max-width: 600px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .hero-action {
+            display: inline-block;
+            background: white;
+            color: #1fc363;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+            background: #f0f0f0;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #2ecc71;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .card-stat {
+            font-size: 32px;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 10px 0;
+        }
+
+        .card-label {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .input-warning {
+            display: block;
+            margin-top: 6px;
+            color: #b42318;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .input-warning[hidden] {
+            display: none;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #27ae60;
+        }
+
+        .btn-secondary {
+            background: #999;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #666;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            color: #666;
+        }
+
+        .vehicle-action-cell {
+            width: 1%;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .features-section {
+            background: white;
+            padding: 60px 20px;
+            margin: 0;
+            text-align: center;
+        }
+
+        .features-header {
+            margin-bottom: 50px;
+        }
+
+        .features-header h3 {
+            font-size: 2.2rem;
+            color: #1fc363;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .features-header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(31, 195, 99, 0.1);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(31, 195, 99, 0.15);
+            border-color: rgba(31, 195, 99, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .feature-card h4 {
+            color: #1fc363;
+            font-size: 1.4rem;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .footer {
+            background: #0f5c39;
+            color: rgba(255,255,255,0.9);
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 0.95rem;
+            margin-top: 0;
+            border-top: 1px solid rgba(31, 195, 99, 0.2);
+        }
+
+        .footer p {
+            margin: 8px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            color: #2ecc71;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-badge {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .modal-badge svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2ecc71;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .user-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .user-info.active {
+            display: block;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .price-item {
+            background: #e8f8f5;
+            border: 1px solid #a8e6c1;
+            border-radius: 8px;
+            padding: 12px 10px;
+            text-align: center;
+        }
+
+        .price-item strong {
+            display: block;
+            color: #2ecc71;
+            font-size: 18px;
+            margin-top: 4px;
+        }
+
+        .client-only {
+            display: none;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        .vehicle-form {
+            background: #e8f8f5;
+            border: 1px solid #a8e6c1;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 18px;
+        }
+
+        .vehicle-form h4 {
+            margin-bottom: 10px;
+            color: #2ecc71;
+        }
+
+        body.dashboard-mode {
+            height: 100dvh;
+            overflow: hidden;
+            padding: 12px;
+        }
+
+        body.dashboard-mode .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.dashboard-mode .hero-banner,
+        body.dashboard-mode .features-section,
+        body.dashboard-mode .footer {
+            display: none;
+        }
+
+        body.dashboard-mode .navbar {
+            flex-shrink: 0;
+            padding: 10px 18px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+        }
+
+        body.dashboard-mode .brand-logo {
+            width: 48px;
+            height: 48px;
+        }
+
+        body.dashboard-mode .navbar h1 {
+            font-size: 1.8rem;
+        }
+
+        body.dashboard-mode #dashboard.content.active {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        body.dashboard-mode .user-info.active {
+            flex-shrink: 0;
+            margin: 0;
+            padding: 9px 14px;
+        }
+
+        body.dashboard-mode #clientPricePanel {
+            flex-shrink: 0;
+        }
+
+        body.dashboard-mode #clientPricePanel .card {
+            padding: 10px 14px;
+        }
+
+        body.dashboard-mode #clientPricePanel .card h2 {
+            margin-bottom: 6px;
+        }
+
+        body.dashboard-mode .pricing-grid {
+            margin-top: 6px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        body.dashboard-mode .price-item {
+            padding: 6px 10px;
+        }
+
+        body.dashboard-mode .price-item strong {
+            font-size: 16px;
+        }
+
+        body.dashboard-mode .grid {
+            flex-shrink: 0;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin: 0;
+        }
+
+        body.dashboard-mode .grid .card {
+            padding: 12px 16px;
+        }
+
+        body.dashboard-mode .grid .card h2 {
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        body.dashboard-mode .grid .card-stat {
+            margin: 2px 0;
+            font-size: 26px;
+        }
+
+        body.dashboard-mode .dashboard-workspace {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 12px 18px;
+        }
+
+        .tab-nav {
+            display: flex;
+            flex-shrink: 0;
+            gap: 8px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e5ece7;
+        }
+
+        .tab-btn {
+            padding: 9px 16px;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            background: transparent;
+            color: #66736b;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 600;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            color: var(--green-800);
+        }
+
+        .tab-btn.active {
+            border-bottom-color: var(--green-700);
+        }
+
+        .tab-content {
+            display: none;
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        body.dashboard-mode .table {
+            margin-top: 12px;
+        }
+
+        @media (max-width: 700px) {
+            body.dashboard-mode {
+                padding: 8px;
+            }
+
+            body.dashboard-mode .navbar {
+                padding: 8px 10px;
+            }
+
+            body.dashboard-mode .brand-block {
+                gap: 8px;
+            }
+
+            body.dashboard-mode .brand-logo {
+                width: 38px;
+                height: 38px;
+            }
+
+            body.dashboard-mode .navbar h1 {
+                font-size: 1.3rem;
+            }
+
+            body.dashboard-mode .nav-links {
+                gap: 6px;
+            }
+
+            body.dashboard-mode .nav-links button {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+
+            body.dashboard-mode .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            body.dashboard-mode .dashboard-workspace {
+                padding: 10px;
+            }
+
+            .tab-nav {
+                gap: 0;
+            }
+
+            .tab-btn {
+                flex: 1;
+                padding: 9px 6px;
+                font-size: 13px;
+            }
+
+            .tab-content {
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 650px;
+            }
+        }
+
+        .receipt-content {
+            max-width: 520px;
+        }
+
+        .receipt-paper {
+            margin: 18px 0;
+            padding: 24px;
+            border: 1px dashed #7a8580;
+            background: #fff;
+            color: #1f2d25;
+        }
+
+        .receipt-paper h3,
+        .receipt-paper .receipt-total {
+            text-align: center;
+        }
+
+        .receipt-paper h3 {
+            margin-bottom: 6px;
+        }
+
+        .receipt-status {
+            margin: 12px 0;
+            padding: 8px;
+            background: #fff4d6;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 10px 0;
+        }
+
+        .receipt-total {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #c8d0cb;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .receipt-note {
+            margin-top: 16px;
+            color: #5f6c66;
+            font-size: 0.9rem;
+        }
+
+        .receipt-actions {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ticket-confirmation {
+            margin-top: 14px;
+            padding: 14px;
+            border-left: 4px solid var(--green-700);
+            border-radius: 8px;
+            background: var(--green-100);
+        }
+
+        .ticket-confirmation h4 {
+            margin-bottom: 8px;
+            color: var(--green-800);
+        }
+
+        .ticket-confirmation p {
+            margin: 5px 0;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+
+            #receiptModal.active,
+            #receiptModal.active * {
+                visibility: visible !important;
+            }
+
+            #receiptModal.active {
+                position: absolute;
+                inset: 0;
+                display: block;
+                padding: 0;
+                background: #fff;
+            }
+
+            #receiptModal .modal-content {
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none;
+            }
+
+            #receiptModal .close,
+            .receipt-actions {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="brand-block">
+                <div class="brand-logo" aria-label="PHINParks logo">
+                    <svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                        <defs>
+                            <path id="logoTextArc" d="M 130,40 a 90,90 0 1,1 0,180 a 90,90 0 1,1 0,-180"/>
+                        </defs>
+                        <circle cx="130" cy="130" r="118" fill="#0b8a48"/>
+                        <circle cx="130" cy="130" r="102" fill="#f7f7f7" stroke="#d6a13d" stroke-width="10"/>
+                        <circle cx="130" cy="130" r="88" fill="none" stroke="#0b8a48" stroke-width="6"/>
+
+                        <text fill="#0b8a48" font-size="15" font-weight="700" font-family="Segoe UI, Arial, sans-serif" letter-spacing="2.3">
+                            <textPath href="#logoTextArc" startOffset="50%" text-anchor="middle">SAINT JUDE COLLEGE</textPath>
+                        </text>
+
+                        <g transform="translate(0 0)">
+                            <path d="M130 58 L105 106 L130 94 L155 106 Z" fill="#d6a13d"/>
+                            <path d="M113 116 C101 122, 96 133, 96 144 C96 164, 110 180, 130 192 C150 180, 164 164, 164 144 C164 133, 159 122, 147 116 L130 129 Z" fill="#d6a13d"/>
+                            <path d="M98 150 C111 166, 120 173, 130 177 C140 173, 149 166, 162 150" stroke="#f4ce79" stroke-width="9" fill="none" stroke-linecap="round"/>
+                            <path d="M130 109 C118 110, 111 115, 105 124 C100 133, 101 143, 112 150 C116 126, 118 117, 130 109 Z" fill="#f4ce79"/>
+                            <path d="M130 109 C142 110, 149 115, 155 124 C160 133, 159 143, 148 150 C144 126, 142 117, 130 109 Z" fill="#f4ce79"/>
+                            <path d="M130 72 C120 81, 117 92, 118 102 L130 113 L142 102 C143 92, 140 81, 130 72 Z" fill="#d6a13d"/>
+                            <path d="M130 123 L112 170 L130 161 L148 170 Z" fill="#f4ce79"/>
+                            <path d="M86 137 C92 121, 104 112, 118 113" stroke="#f4ce79" stroke-width="7" fill="none" stroke-linecap="round"/>
+                            <path d="M174 137 C168 121, 156 112, 142 113" stroke="#f4ce79" stroke-width="7" fill="none" stroke-linecap="round"/>
+                        </g>
+
+                        <path d="M58 60 L68 60 L68 72 L58 72 Z" fill="#d6a13d"/>
+                        <path d="M192 60 L202 60 L202 72 L192 72 Z" fill="#d6a13d"/>
+                        <path d="M50 188 L60 188 L60 200 L50 200 Z" fill="#d6a13d"/>
+                        <path d="M200 188 L210 188 L210 200 L200 200 Z" fill="#d6a13d"/>
+                    </svg>
+                </div>
+                <h1>PHINParks</h1>
+            </div>
+            <div class="nav-links">
+                <button onclick="showLogin()" id="loginBtn">Login</button>
+                <button onclick="showRegister()" id="registerBtn">Register</button>
+                <button onclick="logout()" id="logoutBtn" style="display:none;">Logout</button>
+            </div>
+        </div>
+
+        <div class="hero-banner">
+            <h2>PHINParks for Better Life</h2>
+            <p>Simple parking management for easier daily travel and better campus life.</p>
+            <button class="hero-action" onclick="showLogin()">Get Started</button>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <div class="features-header">
+                <h3>Why Choose PHINParks?</h3>
+                <p>Powerful features designed to make parking management simple and efficient</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🚗</span>
+                    <h4>Vehicle Management</h4>
+                    <p>Easily register and track your vehicles with complete details and information</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🅿️</span>
+                    <h4>Slot Tracking</h4>
+                    <p>Real-time parking slot availability and management across campus</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎫</span>
+                    <h4>Ticket System</h4>
+                    <p>Create and manage parking tickets with automatic fee calculation</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2026 PHINParks - Smart Campus Parking Management System</p>
+            <p>Saint Jude College Campus | Built for Students & Faculty</p>
+        </div>
+
+        <!-- Login Modal -->
+        <div class="modal" id="loginModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('loginModal')">&times;</span>
+                <h2>Login</h2>
+                <div id="loginAlert"></div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div class="modal" id="registerModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('registerModal')">&times;</span>
+                <h2>
+                    <span class="modal-badge" aria-label="PHINMA logo">
+                        <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                            <circle cx="110" cy="110" r="100" fill="#0f4d4a" stroke="#d9aa2b" stroke-width="12"/>
+                            <circle cx="110" cy="110" r="82" fill="#f5f5f5" stroke="#d9aa2b" stroke-width="6"/>
+                            <path d="M110 60 C96 72, 92 82, 90 89 C83 98, 79 108, 82 118 C86 131, 98 140, 110 146 C122 140, 134 131, 138 118 C141 108, 137 98, 130 89 C128 82, 124 72, 110 60 Z" fill="#d49a2b"/>
+                            <path d="M100 98 C88 103, 84 112, 85 122 C86 137, 95 151, 110 160 C125 151, 134 137, 135 122 C136 112, 132 103, 120 98 L110 120 L100 98 Z" fill="#d49a2b"/>
+                            <path d="M110 146 L98 176 L110 170 L122 176 Z" fill="#d49a2b"/>
+                            <path d="M108 98 L110 150 L112 98 Z" fill="#f1c863" opacity="0.7"/>
+                            <path d="M88 120 C94 112, 101 109, 110 109 C119 109, 126 112, 132 120" stroke="#f1c863" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+                        </svg>
+                    </span>
+                    Register
+                </h2>
+                <div id="registerAlert"></div>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>First admin setup key (leave blank for a regular account)</label>
+                        <input type="password" id="adminSetupKey" autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn">Register</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment receipt -->
+        <div class="modal" id="receiptModal" role="dialog" aria-modal="true" aria-labelledby="receiptHeading">
+            <div class="modal-content receipt-content">
+                <span class="close" onclick="closeModal('receiptModal')" aria-label="Close">&times;</span>
+                <h2 id="receiptHeading">Parking Payment Receipt</h2>
+                <div class="receipt-paper" id="receiptPaper">
+                    <h3>PHINParks</h3>
+                    <div class="receipt-row"><span>Receipt</span><strong id="receiptNumber"></strong></div>
+                    <div class="receipt-status" id="receiptStatus"></div>
+                    <div class="receipt-row"><span>Vehicle plate</span><strong id="receiptPlate"></strong></div>
+                    <div class="receipt-row"><span>Parking slot</span><strong id="receiptSlot"></strong></div>
+                    <div class="receipt-row"><span>Entry time</span><strong id="receiptEntry"></strong></div>
+                    <div class="receipt-row"><span id="receiptEndLabel">Bill prepared</span><strong id="receiptEnd"></strong></div>
+                    <div class="receipt-row"><span>Parking duration</span><strong id="receiptDuration"></strong></div>
+                    <div class="receipt-total">Amount: <span id="receiptAmount"></span></div>
+                    <p class="receipt-note" id="receiptNote"></p>
+                </div>
+                <div class="receipt-actions">
+                    <button type="button" class="btn" onclick="printReceipt()">Print bill / receipt</button>
+                    <button type="button" class="btn" id="recordCashButton" onclick="recordCashPayment()" style="display: none; background: #1aa85f;">Record cash payment &amp; complete checkout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="content">
+            <div class="user-info" id="userInfo">
+                <strong id="userName"></strong> - <span id="userType"></span>
+            </div>
+
+            <div id="clientPricePanel" class="client-only">
+                <div class="card">
+                    <h2>Parking Rates</h2>
+                    <div id="pricingGrid" class="pricing-grid"></div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid">
+                <div class="card">
+                    <h2>Total Parking Slots</h2>
+                    <div class="card-stat" id="totalSlots">-</div>
+                    <div class="card-label">Configured</div>
+                </div>
+                <div class="card">
+                    <h2>Available Slots</h2>
+                    <div class="card-stat" id="availableSlots">-</div>
+                    <div class="card-label">Ready to use</div>
+                </div>
+                <div class="card">
+                    <h2>Occupied Slots</h2>
+                    <div class="card-stat" id="occupiedSlots">-</div>
+                    <div class="card-label">In use</div>
+                </div>
+                <div class="card">
+                    <h2>Active Tickets</h2>
+                    <div class="card-stat" id="activeTickets">-</div>
+                    <div class="card-label">Current</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="card dashboard-workspace">
+                <div class="tab-nav" role="tablist" aria-label="Parking management">
+                    <button onclick="switchTab('vehicles', event)" class="tab-btn active" role="tab" aria-selected="true">Vehicles</button>
+                    <button onclick="switchTab('slots', event)" class="tab-btn" role="tab" aria-selected="false">Parking Slots</button>
+                    <button onclick="switchTab('tickets', event)" class="tab-btn" role="tab" aria-selected="false">Tickets</button>
+                </div>
+
+                <!-- Vehicles Tab -->
+                <div id="vehiclesTab" class="tab-content active" role="tabpanel">
+                    <div id="vehicleFormContainer" class="client-only vehicle-form">
+                        <h4>Register My Vehicle</h4>
+                        <form id="vehicleForm" onsubmit="handleVehicleRegistration(event)">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+                                <div class="form-group" id="vehiclePlateGroup">
+                                    <label>Plate Number</label>
+                                    <input type="text" id="vehiclePlateNumber" aria-describedby="vehiclePlateWarning">
+                                    <span id="vehiclePlateWarning" class="input-warning" role="alert" hidden>Use uppercase letters for the plate number. Lowercase letters are not allowed.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Vehicle Type</label>
+                                    <select id="vehicleType">
+                                        <option value="CAR">Car</option>
+                                        <option value="BIKE">Bike</option>
+                                        <option value="MOTOR">Motor</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Color</label>
+                                    <input type="text" id="vehicleColor" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Brand</label>
+                                    <input type="text" id="vehicleBrand" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Model</label>
+                                    <input type="text" id="vehicleModel" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn" style="width: auto; margin-top: 8px;">Register Vehicle</button>
+                        </form>
+                    </div>
+
+                    <h3 style="color: #2ecc71; margin-bottom: 20px;">Registered Vehicles</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Plate Number</th>
+                                <th>Type</th>
+                                <th>Color</th>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Owner</th>
+                                <th class="admin-only vehicle-action-cell"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehiclesList">
+                            <tr><td colspan="7" style="text-align: center; color: #999;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Slots Tab -->
+                <div id="slotsTab" class="tab-content" role="tabpanel">
+                    <h3 style="color: #2ecc71; margin-bottom: 20px;">Parking Slots</h3>
+                    <div id="addSlotForm" class="admin-only" style="margin-bottom: 20px; padding: 15px; background: #e8f8f5; border-radius: 5px;">
+                        <h4>Add New Slot</h4>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <select id="slotType" style="flex: 1;">
+                                <option value="COMPACT">Compact</option>
+                                <option value="LARGE">Large</option>
+                                <option value="BIKE">Bike</option>
+                                <option value="MOTORS">Motors</option>
+                            </select>
+                            <button class="btn" onclick="addSlot()" style="flex: 1; width: auto;">Add Slot</button>
+                        </div>
+                    </div>
+
+                    <!-- Available Slot Types Info -->
+                    <div style="margin-bottom: 20px; padding: 15px; background: #e8f8f5; border-left: 4px solid #2ecc71; border-radius: 5px;">
+                        <h4 style="color: #2ecc71; margin-bottom: 10px;">Available Slot Types</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;" id="slotTypesInfo">
+                            <div><strong>BIKE</strong> - Small bikes/motorcycles</div>
+                            <div><strong>COMPACT</strong> - Small to medium cars</div>
+                            <div><strong>LARGE</strong> - Large vehicles/SUVs</div>
+                            <div><strong>MOTORS</strong> - Motorized vehicles</div>
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Slot #</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="slotsList">
+                            <tr><td colspan="3" style="text-align: center; color: #999;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tickets Tab -->
+                <div id="ticketsTab" class="tab-content" role="tabpanel">
+                    <!-- Create Ticket Form (Client Only) -->
+                    <div class="client-only" style="background: #e8f8f5; padding: 20px; border-radius: 12px; margin-bottom: 25px; border-left: 4px solid #2ecc71;">
+                        <h3 style="color: #2ecc71; margin: 0 0 15px 0;">Create Parking Entry</h3>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 150px; gap: 12px; align-items: flex-end;">
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Vehicle</label>
+                                <select id="vehicleSelect" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                                    <option value="">Select your vehicle...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Parking Slot</label>
+                                <select id="slotSelect" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                                    <option value="">Select available slot...</option>
+                                </select>
+                            </div>
+                            <button onclick="createParkingEntry()" class="btn" style="padding: 8px 16px; background: #2ecc71; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Enter Parking</button>
+                        </div>
+                        <div id="createTicketAlert" style="margin-top: 10px;"></div>
+                        <div id="createdTicketConfirmation" class="ticket-confirmation" hidden aria-live="polite">
+                            <h4>Parking ticket created</h4>
+                            <p>Ticket ID: <strong id="createdTicketId"></strong></p>
+                            <p>Vehicle: <strong id="createdTicketPlate"></strong></p>
+                            <p>Parking slot: <strong id="createdTicketSlot"></strong></p>
+                            <p>Entry time: <strong id="createdTicketEntry"></strong></p>
+                            <button id="createdTicketBillButton" class="btn" type="button" style="width: auto; margin-top: 8px;">View payment bill</button>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #2ecc71; margin-bottom: 20px;">Active Tickets</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ticket ID</th>
+                                <th>Vehicle</th>
+                                <th>Entry Date</th>
+                                <th>Slot #</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketsList">
+                            <tr><td colspan="6" style="text-align: center; color: #999;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dynamic API URL that works from any network address (localhost, IP, domain)
+        const API_URL = `${window.location.protocol}//${window.location.host}/api`;
+        const VEHICLE_RATES = {
+            CAR: 50,
+            MOTORCYCLE: 40,
+            BIKE: 30
+        };
+        let currentUser = null;
+        let currentReceiptTicketId = null;
+
+        // Modal functions
+        function showLogin() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function showRegister() {
+            document.getElementById('registerModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    currentUser = data.data;
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    closeModal('loginModal');
+                    showDashboard();
+                    loadDashboardData();
+                    showAlert('loginAlert', 'Login successful!', 'success');
+                } else {
+                    showAlert('loginAlert', data.message, 'error');
+                }
+            })
+            .catch(e => showAlert('loginAlert', 'Login failed: ' + e.message, 'error'));
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const setupKey = document.getElementById('adminSetupKey').value;
+
+            if (password !== confirmPassword) {
+                showAlert('registerAlert', 'Passwords do not match', 'error');
+                return;
+            }
+
+            const endpoint = setupKey ? '/auth/setup-admin' : '/auth/register';
+            fetch(`${API_URL}${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ firstName, lastName, email, password, confirmPassword, setupKey })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    currentUser = data.data;
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    closeModal('registerModal');
+                    showDashboard();
+                    loadDashboardData();
+                    showAlert('registerAlert', 'Registration successful!', 'success');
+                } else {
+                    showAlert('registerAlert', data.message, 'error');
+                }
+            })
+            .catch(e => showAlert('registerAlert', 'Registration failed: ' + e.message, 'error'));
+        }
+
+        function logout() {
+            fetch(`${API_URL}/auth/logout`, { method: 'POST' }).finally(() => {
+                currentUser = null;
+                localStorage.removeItem('user');
+                document.getElementById('dashboard').classList.remove('active');
+                document.body.classList.remove('dashboard-mode');
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('loginBtn').style.display = '';
+                document.getElementById('registerBtn').style.display = '';
+                document.getElementById('userInfo').classList.remove('active');
+                window.scrollTo(0, 0);
+            });
+        }
+
+        function showDashboard() {
+            document.body.classList.add('dashboard-mode');
+            window.scrollTo(0, 0);
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('registerBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('userInfo').classList.add('active');
+            document.getElementById('userName').textContent = currentUser.fullName;
+            document.getElementById('userType').textContent = currentUser.userType;
+            updateRoleControls();
+            renderPricing();
+        }
+
+        function updateRoleControls() {
+            const isAdmin = currentUser && currentUser.userType && currentUser.userType.toUpperCase() === 'ADMIN';
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = isAdmin ? 'block' : 'none';
+            });
+            document.querySelectorAll('.client-only').forEach(el => {
+                el.style.display = isAdmin ? 'none' : 'block';
+            });
+        }
+
+        function renderPricing() {
+            const pricingGrid = document.getElementById('pricingGrid');
+            if (!pricingGrid) return;
+
+            pricingGrid.innerHTML = Object.entries(VEHICLE_RATES).map(([type, price]) => `
+                <div class="price-item">
+                    <span>${type}</span>
+                    <strong>₱${price} / hour</strong>
+                </div>
+            `).join('');
+        }
+
+        function loadDashboardData() {
+            loadParkingSlots();
+            loadVehicles();
+            loadTickets();
+            renderPricing();
+        }
+
+        function loadParkingSlots() {
+            // First load available slot types
+            fetch(`${API_URL}/parking-slots/types`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.slotTypes) {
+                        const slotTypeSelect = document.getElementById('slotType');
+                        slotTypeSelect.innerHTML = '';
+                        data.slotTypes.forEach(type => {
+                            const option = document.createElement('option');
+                            option.value = type;
+                            option.textContent = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+                            slotTypeSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(err => console.error('Error loading slot types:', err));
+
+            // Then load slots
+            fetch(`${API_URL}/parking-slots`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('totalSlots').textContent = data.total;
+                        document.getElementById('availableSlots').textContent = data.available;
+                        document.getElementById('occupiedSlots').textContent = data.occupied;
+                        displaySlots(data.slots);
+                    }
+                });
+        }
+
+        function loadVehicles() {
+            const isAdmin = currentUser && currentUser.userType && currentUser.userType.toUpperCase() === 'ADMIN';
+            const userId = currentUser ? currentUser.id : 0;
+            
+            // If client, load only their vehicles. If admin, load all vehicles.
+            const endpoint = isAdmin ? `${API_URL}/vehicles` : `${API_URL}/vehicles/user/${userId}`;
+            
+            fetch(endpoint)
+                .then(r => r.json())
+                .then(data => {
+                    // Handle both response formats
+                    let vehicles = [];
+                    if (data.data && Array.isArray(data.data)) {
+                        vehicles = data.data;
+                    } else if (data.vehicles && Array.isArray(data.vehicles)) {
+                        vehicles = data.vehicles;
+                    } else if (Array.isArray(data)) {
+                        vehicles = data;
+                    }
+                    
+                    if (data.success || vehicles.length >= 0) {
+                        displayVehicles(vehicles);
+                    }
+                });
+        }
+
+        function loadTickets() {
+            const isAdmin = currentUser && currentUser.userType === 'ADMIN';
+            const endpoint = isAdmin
+                ? `${API_URL}/tickets/active`
+                : `${API_URL}/tickets/user`;
+            fetch(endpoint)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const tickets = isAdmin ? data.tickets : data.activeTickets;
+                        document.getElementById('activeTickets').textContent = tickets.length;
+                        displayTickets(isAdmin ? tickets : tickets.map(ticket => ({
+                            ID: ticket.ID,
+                            plateNumber: ticket.vehicle.plateNumber,
+                            entryDate: ticket.entryDate,
+                            slotNumber: ticket.slotNumber
+                        })));
+                    }
+                });
+        }
+
+        function displayVehicles(vehicles) {
+            const tbody = document.getElementById('vehiclesList');
+            const vehicleList = Array.isArray(vehicles) ? vehicles : [];
+            const isAdmin = currentUser && currentUser.userType && currentUser.userType.toUpperCase() === 'ADMIN';
+            tbody.innerHTML = vehicleList.length ? vehicleList.map(v => `
+                <tr>
+                    <td>${v.plateNumber}</td>
+                    <td>${v.vehicleType}</td>
+                    <td>${v.color}</td>
+                    <td>${v.brand}</td>
+                    <td>${v.model}</td>
+                    <td>${v.ownerName}</td>
+                    ${isAdmin ? `<td class="vehicle-action-cell"><button class="btn" type="button" onclick="removeVehicle('${encodeURIComponent(v.plateNumber)}')" style="width: auto; padding: 6px 12px; background: #e74c3c;">Remove</button></td>` : ''}
+                </tr>
+            `).join('') : `<tr><td colspan="${isAdmin ? 7 : 6}" style="text-align: center; color: #999;">No vehicles registered</td></tr>`;
+        }
+
+        function removeVehicle(encodedPlateNumber) {
+            const plateNumber = decodeURIComponent(encodedPlateNumber);
+            if (!confirm(`Remove vehicle ${plateNumber}? This cannot be undone.`)) return;
+
+            fetch(`${API_URL}/vehicles/${encodeURIComponent(plateNumber)}`, { method: 'DELETE' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        loadVehicles();
+                        loadParkingSlots();
+                        loadTickets();
+                    } else {
+                        alert(data.message || 'Vehicle removal failed');
+                    }
+                })
+                .catch(e => alert('Vehicle removal failed: ' + e.message));
+        }
+
+        function displaySlots(slots) {
+            const tbody = document.getElementById('slotsList');
+            tbody.innerHTML = slots.length ? slots.map(s => `
+                <tr>
+                    <td>#${s.slotNumber}</td>
+                    <td>${s.type}</td>
+                    <td><span style="color: ${s.available ? 'green' : 'red'}; font-weight: bold;">${s.available ? 'Available' : 'Occupied'}</span></td>
+                </tr>
+            `).join('') : '<tr><td colspan="3" style="text-align: center; color: #999;">No slots configured</td></tr>';
+        }
+
+        function displayTickets(tickets) {
+            const tbody = document.getElementById('ticketsList');
+            const isAdmin = currentUser && currentUser.userType && currentUser.userType.toUpperCase() === 'ADMIN';
+            tbody.innerHTML = tickets.length ? tickets.map(t => `
+                <tr>
+                    <td>#${t.ID}</td>
+                    <td>${t.plateNumber}</td>
+                    <td>${t.entryDate}</td>
+                    <td>#${t.slotNumber}</td>
+                    <td><span style="color: green;">Active</span></td>
+                    <td><button class="btn" type="button" onclick="viewPaymentReceipt(${t.ID})" style="width: auto; padding: 6px 12px;">${isAdmin ? 'Review bill' : 'View payment bill'}</button></td>
+                </tr>
+            `).join('') : '<tr><td colspan="6" style="text-align: center; color: #999;">No active tickets</td></tr>';
+        }
+
+        function viewPaymentReceipt(ticketId) {
+            fetch(`${API_URL}/tickets/${ticketId}/receipt`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert(data.message || 'Could not prepare the payment bill');
+                        return;
+                    }
+                    currentReceiptTicketId = ticketId;
+                    showPaymentReceipt(data);
+                    document.getElementById('receiptStatus').textContent = data.paymentStatus;
+                    document.getElementById('receiptEndLabel').textContent = 'Bill prepared';
+                    document.getElementById('receiptEnd').textContent = data.receiptTime;
+                    document.getElementById('receiptNote').textContent = currentUser.userType.toUpperCase() === 'ADMIN'
+                        ? 'Demo cash workflow: after physically receiving cash, record the payment below. No real payment is processed.'
+                        : 'Estimated bill: the amount can increase if more time passes. Show it to the parking attendant for the current total. An administrator must record the cash payment before the vehicle can exit.';
+                    document.getElementById('recordCashButton').style.display =
+                        currentUser.userType.toUpperCase() === 'ADMIN' ? 'inline-block' : 'none';
+                    document.getElementById('receiptModal').classList.add('active');
+                })
+                .catch(() => alert('Could not connect to the parking system'));
+        }
+
+        function showPaymentReceipt(data) {
+            document.getElementById('receiptNumber').textContent = data.receiptNumber;
+            document.getElementById('receiptPlate').textContent = data.plateNumber;
+            document.getElementById('receiptSlot').textContent = `#${data.slotNumber}`;
+            document.getElementById('receiptEntry').textContent = data.entryTime;
+            document.getElementById('receiptDuration').textContent = `${data.durationMinutes} minute(s)`;
+            document.getElementById('receiptAmount').textContent =
+                new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(data.amount);
+        }
+
+        function recordCashPayment() {
+            if (!currentReceiptTicketId || !confirm('Confirm that the attendant received the cash payment and complete checkout?')) {
+                return;
+            }
+
+            const button = document.getElementById('recordCashButton');
+            button.disabled = true;
+            fetch(`${API_URL}/tickets/${currentReceiptTicketId}/checkout`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        button.disabled = false;
+                        alert(data.message || 'Could not record the payment');
+                        return;
+                    }
+                    showPaymentReceipt(data);
+                    document.getElementById('receiptStatus').textContent = 'PAID - CASH RECORDED';
+                    document.getElementById('receiptEndLabel').textContent = 'Exit time';
+                    document.getElementById('receiptEnd').textContent = data.exitTime;
+                    document.getElementById('receiptNote').textContent =
+                        'Cash payment was recorded by an administrator. This demo does not process or verify real payments.';
+                    document.getElementById('recordCashButton').style.display = 'none';
+                    loadDashboardData();
+                })
+                .catch(() => {
+                    button.disabled = false;
+                    alert('Could not connect to the parking system');
+                });
+        }
+
+        function printReceipt() {
+            window.print();
+        }
+
+        function populateTicketForms() {
+            // Populate vehicle select for ticket creation (client only)
+            const isClient = currentUser && currentUser.userType === 'CLIENT';
+            if (!isClient) return;
+
+            const vehicleSelect = document.getElementById('vehicleSelect');
+            const slotSelect = document.getElementById('slotSelect');
+            let vehicleTypeMap = {}; // Store vehicle type for each plate number
+
+            // Load user's vehicles and filter out those with active tickets
+            const userId = currentUser.id;
+            Promise.all([
+                fetch(`${API_URL}/vehicles/user/${userId}`).then(r => r.json()),
+                fetch(`${API_URL}/tickets/user`).then(r => r.json())
+            ])
+            .then(([vehicleData, ticketData]) => {
+                const vehicles = vehicleData.data || [];
+                const activeTickets = ticketData.activeTickets || [];
+                const parkedPlates = activeTickets.map(t => t.vehicle.plateNumber);
+                
+                // Filter vehicles: exclude those with active parking tickets
+                const availableVehicles = vehicles.filter(v => !parkedPlates.includes(v.plateNumber));
+                
+                vehicleSelect.innerHTML = '<option value="">Select your vehicle...</option>';
+                if (availableVehicles.length > 0) {
+                    availableVehicles.forEach(v => {
+                        const option = document.createElement('option');
+                        option.value = v.plateNumber;
+                        option.textContent = `${v.plateNumber} (${v.vehicleType})`;
+                        option.dataset.vehicleType = v.vehicleType;
+                        vehicleTypeMap[v.plateNumber] = v.vehicleType;
+                        vehicleSelect.appendChild(option);
+                    });
+                }
+                
+                // Add event listener to filter slots when vehicle is selected
+                vehicleSelect.addEventListener('change', () => {
+                    const selectedPlate = vehicleSelect.value;
+                    const selectedType = vehicleSelect.options[vehicleSelect.selectedIndex]?.dataset.vehicleType;
+                    
+                    if (!selectedPlate || !selectedType) {
+                            slotSelect.innerHTML = '<option value="">Select available slot...</option>';
+                            return;
+                        }
+                        
+                        // Filter slots by vehicle type
+                        fetch(`${API_URL}/parking-slots`)
+                            .then(r => r.json())
+                            .then(data => {
+                                const slots = data.data || data.slots || [];
+                                slotSelect.innerHTML = '<option value="">Select available slot...</option>';
+                                
+                                // Normalize vehicle type and map to compatible slot types
+                                const getCompatibleSlotTypes = (vehicleType) => {
+                                    const type = vehicleType.toUpperCase().trim();
+                                    switch(type) {
+                                        case 'CAR':
+                                            return ['COMPACT', 'LARGE'];
+                                        case 'BIKE':
+                                            return ['BIKE'];
+                                        case 'MOTOR':
+                                            return ['MOTORS'];
+                                        default:
+                                            return [];
+                                    }
+                                };
+                                
+                                const compatibleTypes = getCompatibleSlotTypes(selectedType);
+                                
+                                // Filter: only available slots + matching compatible types
+                                const matchingSlots = slots.filter(s => {
+                                    if (!s) return false;
+                                    const isAvailable = s.available === true || s.isAvailable === true || !s.occupied || !s.isOccupied;
+                                    const slotType = s.type ? s.type.toUpperCase().trim() : '';
+                                    const typeMatch = compatibleTypes.includes(slotType);
+                                    return isAvailable && typeMatch;
+                                });
+                                
+                                if (matchingSlots.length > 0) {
+                                    matchingSlots.forEach(s => {
+                                        const option = document.createElement('option');
+                                        option.value = s.slotNumber;
+                                        option.textContent = `Slot #${s.slotNumber} (${s.type})`;
+                                        slotSelect.appendChild(option);
+                                    });
+                                } else {
+                                    const option = document.createElement('option');
+                                    option.value = '';
+                                    option.textContent = `No available ${selectedType} slots`;
+                                    option.disabled = true;
+                                    slotSelect.appendChild(option);
+                                }
+                            })
+                            .catch(err => console.error('Error loading slots:', err));
+                    });
+                })
+                .catch(err => console.error('Error loading vehicles:', err));
+
+            // Load available slots initially (all types)
+            fetch(`${API_URL}/parking-slots`)
+                .then(r => r.json())
+                .then(data => {
+                    const slots = data.data || data.slots || [];
+                    slotSelect.innerHTML = '<option value="">Select available slot...</option>';
+                    // Filter only available slots - check multiple possible property names
+                    const availableSlots = slots.filter(s => {
+                        if (!s) return false;
+                        // Try different property names for availability
+                        return s.available === true || s.isAvailable === true || !s.occupied || !s.isOccupied;
+                    });
+                    
+                    console.log('Total slots:', slots.length, 'Available slots:', availableSlots.length); // Debug
+                    
+                    if (availableSlots.length > 0) {
+                        availableSlots.forEach(s => {
+                            const option = document.createElement('option');
+                            option.value = s.slotNumber;
+                            option.textContent = `Slot #${s.slotNumber} (${s.type})`;
+                            slotSelect.appendChild(option);
+                        });
+                    } else {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'No available slots';
+                        option.disabled = true;
+                        slotSelect.appendChild(option);
+                    }
+                })
+                .catch(err => console.error('Error loading slots:', err));
+        }
+
+        function createParkingEntry() {
+            const vehicleSelect = document.getElementById('vehicleSelect');
+            const slotSelect = document.getElementById('slotSelect');
+            const alertDiv = document.getElementById('createTicketAlert');
+
+            const plateNumber = vehicleSelect.value;
+            const slotNumber = slotSelect.value;
+
+            if (!plateNumber || !slotNumber) {
+                showAlert('createTicketAlert', 'Please select both a vehicle and a parking slot', 'error');
+                return;
+            }
+
+            fetch(`${API_URL}/tickets?plateNumber=${plateNumber}&slotNumber=${slotNumber}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const ticketId = Number(data.ticketId);
+                    if (!Number.isInteger(ticketId) || ticketId <= 0) {
+                        throw new Error('The parking entry was created, but the server did not return a valid ticket ID. Please refresh the ticket list or contact the administrator.');
+                    }
+                    showAlert('createTicketAlert', 'Parking entry created successfully. Keep the ticket ID shown below.', 'success');
+                    document.getElementById('createdTicketId').textContent = `#${ticketId}`;
+                    document.getElementById('createdTicketPlate').textContent = data.plateNumber || plateNumber;
+                    document.getElementById('createdTicketSlot').textContent = `#${data.slotNumber || slotNumber}`;
+                    document.getElementById('createdTicketEntry').textContent = data.entryTime || 'See ticket details';
+                    document.getElementById('createdTicketBillButton').onclick = () => viewPaymentReceipt(ticketId);
+                    document.getElementById('createdTicketConfirmation').hidden = false;
+                    vehicleSelect.value = '';
+                    slotSelect.value = '';
+                    // Reload data and refresh ticket form
+                    setTimeout(() => {
+                        loadParkingSlots();
+                        loadTickets();
+                        populateTicketForms();
+                    }, 500);
+                } else {
+                    showAlert('createTicketAlert', data.message || 'Failed to create parking ticket', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Error creating ticket:', err);
+                showAlert('createTicketAlert', 'Error creating parking ticket', 'error');
+            });
+        }
+
+        function updateVehiclePlateField() {
+            const vehicleType = document.getElementById('vehicleType').value;
+            const plateGroup = document.getElementById('vehiclePlateGroup');
+            const plateField = document.getElementById('vehiclePlateNumber');
+            const isBike = vehicleType === 'BIKE';
+
+            plateGroup.style.display = isBike ? 'none' : 'block';
+            plateField.required = !isBike;
+            if (isBike) {
+                plateField.value = '';
+            }
+            validateVehiclePlateNumber();
+        }
+
+        function validateVehiclePlateNumber() {
+            const plateField = document.getElementById('vehiclePlateNumber');
+            const warning = document.getElementById('vehiclePlateWarning');
+            const hasLowercase = /[a-z]/.test(plateField.value);
+            const message = 'Plate number must use uppercase letters. Please enter it in uppercase.';
+
+            warning.hidden = !hasLowercase;
+            plateField.setAttribute('aria-invalid', String(hasLowercase));
+            plateField.setCustomValidity(hasLowercase ? message : '');
+            return !hasLowercase;
+        }
+
+        function handleVehicleRegistration(event) {
+            event.preventDefault();
+            if (!currentUser || !currentUser.id) {
+                showAlert('registerAlert', 'Please log in first to register a vehicle.', 'error');
+                return;
+            }
+
+            const vehicleType = document.getElementById('vehicleType').value;
+            if (vehicleType !== 'BIKE' && !validateVehiclePlateNumber()) {
+                document.getElementById('vehiclePlateNumber').reportValidity();
+                return;
+            }
+            const plateNumber = vehicleType === 'BIKE'
+                ? ''
+                : document.getElementById('vehiclePlateNumber').value.trim();
+
+            const payload = {
+                plateNumber: plateNumber,
+                vehicleType: vehicleType,
+                color: document.getElementById('vehicleColor').value,
+                brand: document.getElementById('vehicleBrand').value,
+                model: document.getElementById('vehicleModel').value
+            };
+
+            fetch(`${API_URL}/vehicles`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(async r => {
+                const text = await r.text();
+                let data = {};
+                try { data = JSON.parse(text); } catch { data = { message: text }; }
+                if (!r.ok && !data.success) {
+                    throw new Error(data.message || 'Failed to register vehicle');
+                }
+                return data;
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('vehicleForm').reset();
+                    loadVehicles();
+                    showAlert('registerAlert', 'Vehicle registered successfully!', 'success');
+                } else {
+                    showAlert('registerAlert', data.message || 'Vehicle registration failed', 'error');
+                }
+            })
+            .catch(err => showAlert('registerAlert', err.message, 'error'));
+        }
+
+        function addSlot() {
+            const type = document.getElementById('slotType').value;
+            fetch(`${API_URL}/parking-slots?type=${type}`, { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('alert', 'Slot added successfully!', 'success');
+                        loadParkingSlots();
+                    }
+                });
+        }
+
+        function switchTab(tabName, event) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                const isActive = tab.id === tabName + 'Tab';
+                tab.classList.toggle('active', isActive);
+                tab.hidden = !isActive;
+            });
+
+            const targetBtn = event?.currentTarget || document.querySelector(`.tab-btn[onclick*="${tabName}"]`);
+            document.querySelectorAll('.tab-btn').forEach(button => {
+                const isActive = button === targetBtn;
+                button.classList.toggle('active', isActive);
+                button.setAttribute('aria-selected', String(isActive));
+            });
+
+            // Populate ticket forms when Tickets tab is opened
+            if (tabName === 'tickets') {
+                populateTicketForms();
+                loadTickets();
+            }
+        }
+
+        function showAlert(id, message, type) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+                setTimeout(() => {
+                    element.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        // Restore the UI only when the server confirms the session is still valid.
+        window.addEventListener('load', () => {
+            const vehicleTypeSelect = document.getElementById('vehicleType');
+            if (vehicleTypeSelect) {
+                vehicleTypeSelect.addEventListener('change', updateVehiclePlateField);
+                updateVehiclePlateField();
+            }
+            document.getElementById('vehiclePlateNumber')
+                .addEventListener('input', validateVehiclePlateNumber);
+
+            if (localStorage.getItem('user')) {
+                fetch(`${API_URL}/auth/me`)
+                    .then(response => response.ok ? response.json() : null)
+                    .then(data => {
+                        if (data && data.success) {
+                            currentUser = data.data;
+                            localStorage.setItem('user', JSON.stringify(currentUser));
+                            showDashboard();
+                            loadDashboardData();
+                        } else {
+                            localStorage.removeItem('user');
+                        }
+                    })
+                    .catch(() => localStorage.removeItem('user'));
+            }
+        });
+    </script>
+</body>
+</html>

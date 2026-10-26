@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "pHINparks"
+        },
+        {
+            "type": "java",
+            "name": "Debug PHINParks",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "parking-management",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "java",
+            "name": "Debug Spring Boot App",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "parking-management",
+            "args": "",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "serverReadyAction": {
+                "pattern": "Tomcat started on port (\\d+)",
+                "uriFormat": "http://localhost:${serverReadyAction.group1}",
+                "action": "openExternally"
+            }
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+/pHINparks.mv.db
+/pHINparks.lock.db
+/pHINparks.trace.db
+/bin/
+/target/
+/.settings/
+/.classpath
+/.project

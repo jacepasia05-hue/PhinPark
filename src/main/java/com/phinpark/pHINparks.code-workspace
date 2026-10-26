@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../../.."
+		}
+	],
+	"settings": {
+		"java.debug.settings.onBuildFailureProceed": true,
+		"java.project.sourcePaths": [
+			"src/main/java",
+			"src/main/resources"
+		],
+		"java.project.outputPath": "target/classes",
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}
