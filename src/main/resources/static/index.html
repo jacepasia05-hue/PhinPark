@@ -238,6 +238,67 @@
             display: none;
         }
 
+        .input-help {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .vehicle-color-picker {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vehicle-color-picker input[type="color"] {
+            width: 52px;
+            height: 42px;
+            padding: 3px;
+            cursor: pointer;
+        }
+
+        .vehicle-color-value {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .vehicle-color-swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .vehicle-color-swatch {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 7px;
+            border: 1px solid #d5ded9;
+            border-radius: 16px;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            font: inherit;
+            font-size: 12px;
+        }
+
+        .vehicle-color-swatch[aria-pressed="true"] {
+            border-color: var(--green-800);
+            box-shadow: 0 0 0 2px rgba(26, 168, 95, 0.2);
+        }
+
+        .vehicle-color-chip {
+            width: 16px;
+            height: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+        }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
@@ -1000,8 +1061,9 @@
                         <input type="password" id="confirmPassword" required>
                     </div>
                     <div class="form-group">
-                        <label>First admin setup key (leave blank for a regular account)</label>
+                        <label for="adminSetupKey">First admin setup key (leave blank for a regular account)</label>
                         <input type="password" id="adminSetupKey" autocomplete="off">
+                        <small class="input-help">First admin only. In Render, set PHINPARKS_ADMIN_SETUP_KEY under the phinparks service's Environment, use at least 32 characters, then save and redeploy. This box cannot create or change the key, and setup will be refused if an admin account already exists.</small>
                     </div>
                     <button type="submit" class="btn">Register</button>
                 </form>
@@ -1098,7 +1160,25 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Color</label>
-                                    <input type="text" id="vehicleColor" required>
+                                    <div class="vehicle-color-picker">
+                                        <input type="color" id="vehicleColor" value="#ffffff" aria-label="Choose a custom vehicle color" required>
+                                        <span class="vehicle-color-value" id="vehicleColorValue" aria-live="polite">White · #FFFFFF</span>
+                                    </div>
+                                    <div class="vehicle-color-swatches" id="vehicleColorSwatches" aria-label="Popular vehicle colors">
+                                        <button type="button" class="vehicle-color-swatch" data-color="#222222" aria-pressed="false"><span class="vehicle-color-chip" style="background:#222222"></span>Black</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#bdc3c7" aria-pressed="false"><span class="vehicle-color-chip" style="background:#bdc3c7"></span>Silver</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#ffffff" aria-pressed="true"><span class="vehicle-color-chip" style="background:#ffffff"></span>White</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#e74c3c" aria-pressed="false"><span class="vehicle-color-chip" style="background:#e74c3c"></span>Red</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#f39c12" aria-pressed="false"><span class="vehicle-color-chip" style="background:#f39c12"></span>Orange</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#f1c40f" aria-pressed="false"><span class="vehicle-color-chip" style="background:#f1c40f"></span>Yellow</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#27ae60" aria-pressed="false"><span class="vehicle-color-chip" style="background:#27ae60"></span>Green</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#3498db" aria-pressed="false"><span class="vehicle-color-chip" style="background:#3498db"></span>Blue</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#34495e" aria-pressed="false"><span class="vehicle-color-chip" style="background:#34495e"></span>Navy</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#9b59b6" aria-pressed="false"><span class="vehicle-color-chip" style="background:#9b59b6"></span>Purple</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#e84393" aria-pressed="false"><span class="vehicle-color-chip" style="background:#e84393"></span>Pink</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#8d6e63" aria-pressed="false"><span class="vehicle-color-chip" style="background:#8d6e63"></span>Brown</button>
+                                        <button type="button" class="vehicle-color-swatch" data-color="#d4af37" aria-pressed="false"><span class="vehicle-color-chip" style="background:#d4af37"></span>Gold</button>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label>Brand</label>
@@ -1243,6 +1323,20 @@
 
         function showRegister() {
             document.getElementById('registerModal').classList.add('active');
+        }
+
+        function updateVehicleColor(color) {
+            const picker = document.getElementById('vehicleColor');
+            const normalizedColor = color.toUpperCase();
+            picker.value = normalizedColor;
+            const selectedSwatch = Array.from(document.querySelectorAll('.vehicle-color-swatch'))
+                .find(swatch => swatch.dataset.color.toUpperCase() === normalizedColor);
+            const colorName = selectedSwatch ? selectedSwatch.textContent.trim() : 'Custom color';
+            document.getElementById('vehicleColorValue').textContent =
+                `${colorName} · ${normalizedColor}`;
+            document.querySelectorAll('.vehicle-color-swatch').forEach(swatch => {
+                swatch.setAttribute('aria-pressed', String(swatch === selectedSwatch));
+            });
         }
 
         function closeModal(modalId) {
@@ -1431,18 +1525,31 @@
                 ? `${API_URL}/tickets/active`
                 : `${API_URL}/tickets/user`;
             fetch(endpoint)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        const tickets = isAdmin ? data.tickets : data.activeTickets;
-                        document.getElementById('activeTickets').textContent = tickets.length;
-                        displayTickets(isAdmin ? tickets : tickets.map(ticket => ({
-                            ID: ticket.ID,
-                            plateNumber: ticket.vehicle.plateNumber,
-                            entryDate: ticket.entryDate,
-                            slotNumber: ticket.slotNumber
-                        })));
+                .then(async response => {
+                    const data = await response.json();
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || 'The server could not load active tickets.');
                     }
+                    return data;
+                })
+                .then(data => {
+                    const tickets = isAdmin ? data.tickets : data.activeTickets;
+                    if (!Array.isArray(tickets)) {
+                        throw new Error('The server returned an invalid active-ticket list.');
+                    }
+                    document.getElementById('activeTickets').textContent = tickets.length;
+                    displayTickets(isAdmin ? tickets : tickets.map(ticket => ({
+                        ID: ticket.ID,
+                        plateNumber: ticket.vehicle.plateNumber,
+                        entryDate: ticket.entryDate,
+                        slotNumber: ticket.slotNumber
+                    })));
+                })
+                .catch(error => {
+                    document.getElementById('activeTickets').textContent = '!';
+                    document.getElementById('ticketsList').innerHTML =
+                        '<tr><td colspan="6" style="text-align: center; color: #b42318;">Could not load active tickets. Please refresh and try again.</td></tr>';
+                    showAlert('createTicketAlert', error.message, 'error');
                 });
         }
 
@@ -1869,12 +1976,21 @@
                 element.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
                 setTimeout(() => {
                     element.innerHTML = '';
-                }, 3000);
+                }, type === 'error' ? 8000 : 3000);
             }
         }
 
         // Restore the UI only when the server confirms the session is still valid.
         window.addEventListener('load', () => {
+            const vehicleColorPicker = document.getElementById('vehicleColor');
+            if (vehicleColorPicker) {
+                vehicleColorPicker.addEventListener('input', () => updateVehicleColor(vehicleColorPicker.value));
+                document.querySelectorAll('.vehicle-color-swatch').forEach(swatch => {
+                    swatch.addEventListener('click', () => updateVehicleColor(swatch.dataset.color));
+                });
+                updateVehicleColor(vehicleColorPicker.value);
+            }
+
             const vehicleTypeSelect = document.getElementById('vehicleType');
             if (vehicleTypeSelect) {
                 vehicleTypeSelect.addEventListener('change', updateVehiclePlateField);

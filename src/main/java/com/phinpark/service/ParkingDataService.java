@@ -18,7 +18,6 @@ import com.phinpark.entity.UserEntity;
 import com.phinpark.entity.VehicleEntity;
 import com.phinpark.model.Bike;
 import com.phinpark.model.Car;
-import com.phinpark.model.Color;
 import com.phinpark.model.Motor;
 import com.phinpark.model.ParkingSlot;
 import com.phinpark.model.SlotType;
@@ -202,9 +201,7 @@ public class ParkingDataService {
         vehicle.setOwnerID(ticket.getOwnerId());
         vehicle.setBrand(ticket.getVehicleBrand());
         vehicle.setModel(ticket.getVehicleModel());
-        if (ticket.getVehicleColor() != null && !ticket.getVehicleColor().isBlank()) {
-            vehicle.setColor(Color.valueOf(ticket.getVehicleColor().trim().toUpperCase()));
-        }
+        vehicle.setColor(ticket.getVehicleColor());
         return vehicle;
     }
 

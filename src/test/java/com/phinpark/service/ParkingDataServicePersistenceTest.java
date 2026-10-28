@@ -82,4 +82,26 @@ class ParkingDataServicePersistenceTest {
         assertEquals(SlotType.BIKE, parkingSlotRepository.findById(1).orElseThrow().getType());
         assertEquals(SlotType.MOTORS, parkingSlotRepository.findById(10).orElseThrow().getType());
     }
+
+    @Test
+    void activeTicketsSupportLegacyAndCustomVehicleColors() {
+        parkingDataService.initializeDefaultSlots();
+        vehicleRepository.save(new VehicleEntity(42, "CAR", "YEL-123", "Toyota", "Corolla", "YELLOW"));
+        vehicleRepository.save(new VehicleEntity(42, "CAR", "PNK-123", "Honda", "Civic", "#e84393"));
+        UserEntity user = new UserEntity("Jane", "Doe", "jane@example.test", "password", "CLIENT");
+        user.setId(42);
+
+        Ticket activeTicket = parkingDataService.createTicket("YEL-123", 4, user);
+        assertEquals("YELLOW", activeTicket.getVehicle().getColor());
+        Ticket customColorTicket = parkingDataService.createTicket("PNK-123", 5, user);
+        assertEquals("#e84393", customColorTicket.getVehicle().getColor());
+
+        entityManager.flush();
+        entityManager.clear();
+        assertEquals(2, parkingDataService.getActiveTickets().size());
+        assertTrue(parkingDataService.getActiveTickets().stream()
+                .anyMatch(ticket -> "YELLOW".equals(ticket.getVehicle().getColor())));
+        assertTrue(parkingDataService.getActiveTickets().stream()
+                .anyMatch(ticket -> "#e84393".equals(ticket.getVehicle().getColor())));
+    }
 }

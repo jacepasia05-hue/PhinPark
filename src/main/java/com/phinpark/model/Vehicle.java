@@ -4,7 +4,7 @@ public abstract class Vehicle implements Payable {
 
 	private String plateNumber;
 	private int ownerID;
-	private Color color;
+	private String color;
 	private String brand;
 	private String model;
 
@@ -20,7 +20,7 @@ public abstract class Vehicle implements Payable {
 		this.ownerID = ownerID;
 	}
 
-	public void setColor(Color color) {
+	public void setColor(String color) {
 		this.color = color;
 	}
 
@@ -53,11 +53,11 @@ public abstract class Vehicle implements Payable {
 		return ownerID;
 	}
 
-	public Color getcolor() {
+	public String getcolor() {
 		return color;
 	}
 
-	public Color getColor() {
+	public String getColor() {
 		return color;
 	}
 

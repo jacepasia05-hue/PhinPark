@@ -70,7 +70,10 @@ Public registration always creates a `CLIENT` account. The first admin is
 created through the registration form using the setup key configured in the
 `PHINPARKS_ADMIN_SETUP_KEY` environment variable. Setup is refused if an admin
 already exists. Keep the setup key private; it is only needed for first-admin
-setup, not for later logins.
+setup, not for later logins. Typing a key in the form does not configure it:
+configure the environment variable in the Render service's Environment page
+and redeploy before using the first-admin form. The key must be at least 32
+characters long.
 
 Passwords are stored as BCrypt hashes. After login, the server creates a
 session. The authorization interceptor reads the user's role from the database
@@ -110,6 +113,8 @@ The Render deployment uses PostgreSQL for users, vehicles, parking slots, and
 ticket history. The production database starts empty; local H2 data is not
 migrated automatically. Render's free PostgreSQL database expires after 30
 days, so do not treat it as permanent storage.
+Vehicle colors are stored as text, so preset colors and custom color-picker
+hex values can both be retained in active tickets.
 
 To view the hosted records, open the `phinparks-db` database in the Render
 dashboard and copy its **external** connection details into a PostgreSQL
