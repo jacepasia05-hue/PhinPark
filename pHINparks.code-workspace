@@ -1,0 +1,39 @@
+{
+	"folders": [
+		{
+			"name": "pHINparks",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"/bin": true,
+			"/target": true,
+			"/.settings": true,
+			"/.classpath": true,
+			"/.project": true,
+			"/pHINparks.mv.db": true,
+			"/pHINparks.lock.db": true,
+			"/pHINparks.trace.db": true
+		},
+		"java.debug.settings.onBuildFailureProceed": true,
+		"java.project.sourcePaths": [
+			"src/main/java",
+			"src/main/resources"
+		],
+		"java.project.outputPath": "target/classes",
+		"java.configuration.runtimes": [
+			{
+				"name": "JavaSE-21",
+				"path": "${JAVA_HOME}",
+				"default": true
+			}
+		],
+		"[java]": {
+			"editor.defaultFormatter": "redhat.java",
+			"editor.formatOnSave": true
+		},
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable"
+	}
+}
