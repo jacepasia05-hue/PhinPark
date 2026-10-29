@@ -238,14 +238,6 @@
             display: none;
         }
 
-        .input-help {
-            display: block;
-            margin-top: 6px;
-            color: var(--muted);
-            font-size: 12px;
-            line-height: 1.45;
-        }
-
         .admin-setup-details {
             margin: 14px 0;
             padding: 10px 12px;
@@ -1079,7 +1071,6 @@
                         <div class="form-group" style="margin: 12px 0 0;">
                             <label for="adminSetupKey">Admin setup key</label>
                             <input type="password" id="adminSetupKey" autocomplete="off">
-                            <small class="input-help">The app owner must first set PHINPARKS_ADMIN_SETUP_KEY in Render under the phinparks service's Environment, using at least 32 characters, then save and redeploy. Enter that same private key here. This only works if no administrator account exists yet.</small>
                         </div>
                     </details>
                     <button type="submit" class="btn">Register</button>

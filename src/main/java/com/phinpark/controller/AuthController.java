@@ -3,6 +3,8 @@ package com.phinpark.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -19,6 +21,8 @@ import com.phinpark.service.AuthService;
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AuthService authService;
@@ -120,8 +124,10 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponse.success("Initial admin account created", admin, HttpStatus.CREATED.value()));
         } catch (Exception e) {
+            LOGGER.warn("Initial administrator setup was rejected: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(ApiResponse.error(e.getMessage(), HttpStatus.FORBIDDEN.value(), "Admin setup failed"));
+                    .body(ApiResponse.error("Administrator setup is unavailable. Please contact the system administrator.",
+                            HttpStatus.FORBIDDEN.value(), "Admin setup failed"));
         }
     }
 
