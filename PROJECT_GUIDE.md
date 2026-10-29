@@ -73,7 +73,8 @@ already exists. Keep the setup key private; it is only needed for first-admin
 setup, not for later logins. Typing a key in the form does not configure it:
 configure the environment variable in the Render service's Environment page
 and redeploy before using the first-admin form. The key must be at least 32
-characters long.
+characters long. The key input is tucked under the "Setting up the first
+administrator?" disclosure in the registration form.
 
 Passwords are stored as BCrypt hashes. After login, the server creates a
 session. The authorization interceptor reads the user's role from the database

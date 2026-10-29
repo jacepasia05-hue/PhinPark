@@ -246,6 +246,20 @@
             line-height: 1.45;
         }
 
+        .admin-setup-details {
+            margin: 14px 0;
+            padding: 10px 12px;
+            border: 1px solid #dce5df;
+            border-radius: 8px;
+            background: #f8fbf9;
+        }
+
+        .admin-setup-details summary {
+            color: var(--green-800);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
         .vehicle-color-picker {
             display: flex;
             flex-wrap: wrap;
@@ -1060,11 +1074,14 @@
                         <label>Confirm Password</label>
                         <input type="password" id="confirmPassword" required>
                     </div>
-                    <div class="form-group">
-                        <label for="adminSetupKey">First admin setup key (leave blank for a regular account)</label>
-                        <input type="password" id="adminSetupKey" autocomplete="off">
-                        <small class="input-help">First admin only. In Render, set PHINPARKS_ADMIN_SETUP_KEY under the phinparks service's Environment, use at least 32 characters, then save and redeploy. This box cannot create or change the key, and setup will be refused if an admin account already exists.</small>
-                    </div>
+                    <details class="admin-setup-details">
+                        <summary>Setting up the first administrator?</summary>
+                        <div class="form-group" style="margin: 12px 0 0;">
+                            <label for="adminSetupKey">Admin setup key</label>
+                            <input type="password" id="adminSetupKey" autocomplete="off">
+                            <small class="input-help">The app owner must first set PHINPARKS_ADMIN_SETUP_KEY in Render under the phinparks service's Environment, using at least 32 characters, then save and redeploy. Enter that same private key here. This only works if no administrator account exists yet.</small>
+                        </div>
+                    </details>
                     <button type="submit" class="btn">Register</button>
                 </form>
             </div>
@@ -1376,7 +1393,7 @@
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const setupKey = document.getElementById('adminSetupKey').value;
+            const setupKey = document.getElementById('adminSetupKey').value.trim();
 
             if (password !== confirmPassword) {
                 showAlert('registerAlert', 'Passwords do not match', 'error');
